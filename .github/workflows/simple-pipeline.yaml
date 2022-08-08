@@ -3,16 +3,13 @@ name: CI/CD Pipeline
 concurrency: ci-healthfrontend-${{ github.ref }}
 
 env:
-  TF_VERSION: '1.1.5'
-  TF_WORKING_DIR: 'terraform'
   IMAGE_TAG: ${{ github.sha }}
+  AWS_ROLE_DEV: "arn:aws:iam::245446168277:role/enga-dor-github-actions-role-dev"
+  AWS_DEFAULT_REGION: "eu-central-1"
 
 on:
   push:
     branches: [ main ]
-env:
-  AWS_ROLE_DEV: "arn:aws:iam::245446168277:role/enga-dor-github-actions-role-dev"
-  AWS_DEFAULT_REGION: "eu-central-1"
 
 permissions:
   id-token: write
