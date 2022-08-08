@@ -23,16 +23,18 @@ export const useMovement = (): UseMovementReturn => {
   const dPressed = useKeyPress('d')
 
   useEffect(() => {
-    if (anyPressed && !isLocked) {
-      if (wPressed) {
-        setDirection('n')
-      } else if (aPressed) {
-        setDirection('w')
-      } else if (sPressed) {
-        setDirection('s')
-      } else if (dPressed) {
-        setDirection('e')
-      }
+    if (anyPressed || isLocked) {
+      return
+    }
+
+    if (wPressed) {
+      setDirection('n')
+    } else if (aPressed) {
+      setDirection('w')
+    } else if (sPressed) {
+      setDirection('s')
+    } else if (dPressed) {
+      setDirection('e')
     }
   }, [isLocked, anyPressed, wPressed, aPressed, sPressed, dPressed])
 

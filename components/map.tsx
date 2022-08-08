@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { MovementDirection } from 'components/interfaces/movement'
+
 import useMovement from 'hooks/useMovement'
 
 import styles from './styles/Client.module.css'
@@ -21,17 +23,26 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
 
   const { direction, isLocked, setIsLocked } = useMovement()
 
+  const move = (direction: MovementDirection) => {
+    if (isLocked) {
+      return
+    }
+
+    setIsLocked(true)
+    console.log('move()', 'locked')
+    console.log('move()', 'direction', direction)
+
+    setTimeout(() => {
+      setIsLocked(false)
+      console.log('move()', 'unlocked')
+    }, 2000)
+  }
+
   useEffect(() => {
     if (direction) {
-      setIsLocked(true)
-
-      setTimeout(() => {
-        setIsLocked(false)
-      }, 2000)
-
-      console.log('direction', direction)
+      move(direction)
     }
-  }, [direction, setIsLocked])
+  }, [direction])
 
   return (
     <div className={styles.map}>
