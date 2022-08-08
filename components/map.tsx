@@ -48,7 +48,7 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
     }, [direction])
 
 
-    const getMapCrop = (animateDirection?: MovementDirection): MovementResult[][] => {
+    const getMapCrop = (animateDirection: MovementDirection | null): MovementResult[][] => {
         let fromX = currentPos[0] - 1;
         let toX = currentPos[0] + 1
 
@@ -94,7 +94,7 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         return field
     }
 
-    const Fields = (animateDirection?: MovementDirection): JSX.Element => {
+    const Fields = ({animateDirection}: { animateDirection: MovementDirection|null}): JSX.Element => {
         const fields = getMapCrop(animateDirection)
 
         const eventMapper = {
