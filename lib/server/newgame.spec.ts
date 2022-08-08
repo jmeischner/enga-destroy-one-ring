@@ -1,4 +1,5 @@
 import {
+  COOKIE,
   createUniqueSessionId,
   getStartPosition,
   Position,
@@ -47,10 +48,11 @@ describe("newGame's", () => {
   describe("saveGameState", () => {
     test("should set the startPosition as cookie", () => {
       const startPosition = getStartPosition();
-      saveGameState(startPosition, null, null);
+      const testGameState = {position: startPosition, sessionId: '42'}
+      saveGameState(testGameState, {}, {});
       expect(cookies.setCookie).toHaveBeenCalledWith(
-        "GameState",
-        JSON.stringify(startPosition),
+        COOKIE,
+        testGameState,
         expect.anything()
       );
     });
