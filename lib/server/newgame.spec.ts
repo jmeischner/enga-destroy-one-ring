@@ -8,18 +8,18 @@ import {
 import * as uuid from "uuid";
 import * as cookies from "cookies-next";
 
-const mockV4 = jest.fn();
-const mockSetCookies = jest.fn();
+// const mockV4 = jest.fn();
+// const mockSetCookies = jest.fn();
 
 jest.mock("uuid", () => {
   return {
-    v4: mockV4,
+    v4: jest.fn(),
   };
 });
 
 jest.mock("cookies-next", () => {
   return {
-    setCookies: mockSetCookies,
+    setCookie: jest.fn(),
   };
 });
 
@@ -31,7 +31,7 @@ describe("newGame's", () => {
   describe("createUniqueSessionId", () => {
     test("should return a random value", () => {
       createUniqueSessionId();
-      expect(mockV4).toHaveBeenCalled();
+      expect(uuid.v4).toHaveBeenCalled();
     });
   });
 
@@ -48,7 +48,7 @@ describe("newGame's", () => {
     test("should set the startPosition as cookie", () => {
       const startPosition = getStartPosition();
       saveGameState(startPosition, null, null);
-      expect(mockSetCookies).toHaveBeenCalledWith(
+      expect(cookies.setCookie).toHaveBeenCalledWith(
         "GameState",
         JSON.stringify(startPosition),
         expect.anything()
