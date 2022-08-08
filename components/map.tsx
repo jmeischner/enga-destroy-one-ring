@@ -17,4 +17,4 @@ const Map = (): JSX.Element => {
         </div>
     )
 }
-export default Client
+export default Map

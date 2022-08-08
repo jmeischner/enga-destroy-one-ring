@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { Movement } from 'components/interfaces'
+import { Movement } from 'components/interfaces/movement'
 import useKeyPress from 'hooks/useKeyPress'
 
 import styles from './styles/Client.module.css'
