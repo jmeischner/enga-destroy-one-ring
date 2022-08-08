@@ -1,25 +1,25 @@
 import {
   createUniqueSessionId,
   getStartPosition,
+  Position,
   saveGameState,
 } from "./newgame";
-import { Position } from "./newgame";
 
-import * as cookies from "cookies-next";
 import * as uuid from "uuid";
+import * as cookies from "cookies-next";
 
-const v4 = jest.fn();
-const setCookies = jest.fn();
+const mockV4 = jest.fn();
+const mockSetCookies = jest.fn();
 
 jest.mock("uuid", () => {
   return {
-    v4,
+    v4: mockV4,
   };
 });
 
 jest.mock("cookies-next", () => {
   return {
-    setCookies,
+    setCookies: mockSetCookies,
   };
 });
 
@@ -31,7 +31,7 @@ describe("newGame's", () => {
   describe("createUniqueSessionId", () => {
     test("should return a random value", () => {
       createUniqueSessionId();
-      expect(v4).toHaveBeenCalled();
+      expect(mockV4).toHaveBeenCalled();
     });
   });
 
@@ -48,7 +48,7 @@ describe("newGame's", () => {
     test("should set the startPosition as cookie", () => {
       const startPosition = getStartPosition();
       saveGameState(startPosition, null, null);
-      expect(setCookies).toHaveBeenCalledWith(
+      expect(mockSetCookies).toHaveBeenCalledWith(
         "GameState",
         JSON.stringify(startPosition),
         expect.anything()
