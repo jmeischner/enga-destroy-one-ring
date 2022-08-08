@@ -12,11 +12,6 @@ interface MapProps {
 
 const POS_START = [0, 0]
 
-interface MapProps {
-    afterMove: () => void,
-
-}
-
 const Map = ({ afterMove }: MapProps): JSX.Element => {
   const [currentPos, setCurrentPos] = useState(POS_START)
   const [historyPos, setHistoryPos] = useState([POS_START])
