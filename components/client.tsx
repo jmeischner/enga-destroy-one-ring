@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { Movement } from 'components/interfaces'
 import useKeyPress from 'hooks/useKeyPress'
 
 import styles from './styles/Client.module.css'
@@ -12,6 +13,8 @@ const Client = (): JSX.Element=> {
 
   const [historyPos, setHistoryPos] = useState([POS_START])
 
+  const [isLocked, setIsLocked] = useState<boolean>(false)
+
   const anyPressed = useKeyPress()
   const wPressed = useKeyPress('w')
   const aPressed = useKeyPress('a')
@@ -20,6 +23,8 @@ const Client = (): JSX.Element=> {
 
   useEffect(() => {
     if (anyPressed) {
+      setIsLocked(true)
+
       console.log('anyPressed', anyPressed)
       console.log('wPressed', wPressed)
       console.log('aPressed', aPressed)
@@ -28,10 +33,21 @@ const Client = (): JSX.Element=> {
     }
   }, [anyPressed, wPressed, aPressed, sPressed, dPressed])
 
+  const handleAfterMapMove = (): void => {
+    setIsLocked(false)
+  }
+
+  const apiCall = (): Movement => {
+    return {
+      direction: 'w',
+      event: 'invalid'
+    }
+  }
+
   return (
     <div className={styles.container}>
       Client Game 
-      <Map />
+      <Map afterMove={handleAfterMapMove} />
     </div>
   )
 }
