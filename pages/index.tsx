@@ -1,13 +1,10 @@
 import type { NextPage } from 'next'
 
-import styles from '../styles/Client.module.css'
+import Client from '../components/client'
 
-const Client: NextPage = () => {
-  return (
-    <div className={styles.container}>
-      Client
-    </div>
-  )
-}
+const Game: NextPage = () => (  
+<Client />
+)
 
-export default Client
+
+export default Game
