@@ -7,7 +7,7 @@ import styles from './styles/Client.module.css'
 import Map from './map'
 
 const Client = (): JSX.Element => {
-  const [sessionId, setSessionId] = useState<number>()
+  const [sessionId, setSessionId] = useState<string>()
 
   const api = useApi()
 

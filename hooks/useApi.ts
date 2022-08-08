@@ -2,40 +2,8 @@ import { MovementDirection } from 'components/interfaces/movement'
 
 const basePath = 'http://localhost:3000/api/'
 
-/*
-export const useApi = <T>(path: string): () => Promise<T> => {
-  const execute = (): Promise<T> => {
-    return new Promise((resolve, reject) => {
-      fetch(`${basePath}${path}`)
-      .then(async (res: Response) => await res.json())
-      .then(json => {
-        resolve(json as T)
-      })
-      .catch(reject)
-    })
-  }
-
-  return execute
-}
-*/
-
-/*
-export const useApi = <T>(path: string): () => Promise<T> => {
-  const execute = (): Promise<T> => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log('API-CALL: newgame')
-        resolve(324324 as unknown as T)
-      }, 2000)
-    })
-  }
-
-  return execute
-}
-*/
-
 interface ApiResponseNewGame {
-  id: number
+  id: string
 }
 
 interface ApiResponseMove {}
