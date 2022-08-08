@@ -1,0 +1,16 @@
+.mapContainer {
+  border: 2px solid black;
+}
+.map {
+   border-collapse: collapse;
+}
+.map td {
+  width: 300px;
+  height: 300px;
+}
+.fieldFog {
+  background: rgba( 0,0,0,0.4);
+}
+.fieldPath {
+  background: #4e1;
+}
