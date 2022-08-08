@@ -5,8 +5,8 @@
    border-collapse: collapse;
 }
 .map td {
-  width: 300px;
-  height: 300px;
+  width: 150px;
+  height: 150px;
 }
 .fieldFog {
   background: rgba( 0,0,0,0.4);
