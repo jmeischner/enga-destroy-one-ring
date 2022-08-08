@@ -1,11 +1,33 @@
-import type { NextPage } from 'next'
+import { useEffect, useState } from 'react'
+
+import useMovement from 'hooks/useMovement'
 
 import styles from './styles/Client.module.css'
 
-const Client = (): JSX.Element=> (
-  <div className={styles.map}>
-    Map
- </div>
-)
+interface MapProps {
+  afterMove: () => void
+}
 
-export default Client
+const Map = ({ afterMove }: MapProps): JSX.Element => {
+  const { direction, isLocked, setIsLocked } = useMovement()
+
+  useEffect(() => {
+    if (direction) {
+      setIsLocked(true)
+
+      setTimeout(() => {
+        setIsLocked(false)
+      }, 2000)
+
+      console.log('direction', direction)
+    }
+  }, [direction, setIsLocked])
+
+  return (
+    <div className={styles.map}>
+      Map
+    </div>
+  )
+}
+
+export default Map
