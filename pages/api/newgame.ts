@@ -12,6 +12,7 @@ export default function newGame(req: NextApiRequest, res: NextApiResponse) {
   const state: GameState = {
     position: startPosition,
     sessionId: id,
+    state: 'path'
   };
   saveGameState(state, req, res);
   res.status(200).json({ id });
