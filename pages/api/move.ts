@@ -14,13 +14,14 @@ export default function move(req: NextApiRequest, res: NextApiResponse) {
   if (isFinished) {
     return res.status(406).json({ error: "invalid" });
   }
-  const pos = calculateNewPosition(gameState.position, req.body);
+  const pos = calculateNewPosition(gameState.position, req.body.direction);
   const newPos = checkNewPosition(pos);
   const state: GameState = {
     position: pos,
     sessionId: gameState.sessionId,
     state: newPos,
   };
+
   saveGameState(state, req, res);
   res.status(200).json({ movementResult: newPos });
 }
