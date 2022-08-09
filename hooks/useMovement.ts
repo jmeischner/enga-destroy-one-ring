@@ -37,7 +37,6 @@ export const useMovement = (): UseMovementReturn => {
     } else if (dPressed) {
       setDirection('e')
     }
-    setDirection(null)
   }, [isLocked, anyPressed, wPressed, aPressed, sPressed, dPressed])
 
   return {
