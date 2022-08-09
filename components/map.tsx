@@ -56,7 +56,9 @@ const Map = ({ movement, sessionId }: MapProps): JSX.Element => {
 
         movement.setIsLocked(true)
 
-        const response = await api.move(direction, sessionId)
+        console.log('sessionId', sessionId)
+
+        const response = await api.move(sessionId, direction)
         const movementResult = response.movementResult
 
         updateMapAndPosition(direction, movementResult)
@@ -67,15 +69,15 @@ const Map = ({ movement, sessionId }: MapProps): JSX.Element => {
             case 'Slaughtered':
             case 'Fallen':
                 setIsWalking(false)
-                setShowDeathScreen(true);
+                setShowDeathScreen(true)
                 console.log('show death screen')
                 break;
             case 'Victory':
                 setIsWalking(false)
-                setShowVictoryScreen(true);
+                setShowVictoryScreen(true)
                 break;
         }
-    }, [])
+    }, [sessionId])
 
     useEffect(() => {
         if (movement.direction) {

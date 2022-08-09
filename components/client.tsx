@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import useApi from 'hooks/useApi'
 import { api } from 'hooks/api'
 
 import styles from './styles/Client.module.css'
