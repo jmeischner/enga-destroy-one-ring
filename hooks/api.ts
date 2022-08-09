@@ -40,8 +40,8 @@ const execute = <T>(path: string, method: string, data?: Record<string, unknown>
 }
 
 export const api = {
-    newGame: async () => execute<ApiResponseNewGame>('newgame', 'POST', { asdasd: 'sdfsdf' }),
-    move: async (direction: MovementDirection) => execute<ApiResponseMove>('move', 'POST', { direction })
+    newGame: async () => execute<ApiResponseNewGame>('newgame', 'POST'),
+    move: async (direction: MovementDirection, sessionId: string | null) => execute<ApiResponseMove>('move', 'POST', { direction, sessionId })
   }
 
 

@@ -4,10 +4,11 @@ import { MovementDirection } from 'components/interfaces/movement'
 
 import useKeyPress from './useKeyPress'
 
-interface UseMovementReturn {
+export interface UseMovementReturn {
   direction: MovementDirection | null
   isLocked: boolean
   setIsLocked: Dispatch<SetStateAction<boolean>>
+  setDirection: Dispatch<SetStateAction<MovementDirection | null>>
 }
 
 export const useMovement = (): UseMovementReturn => {
@@ -41,7 +42,8 @@ export const useMovement = (): UseMovementReturn => {
   return {
     direction,
     isLocked,
-    setIsLocked
+    setIsLocked,
+    setDirection
   }
 }
 
