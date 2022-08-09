@@ -6,8 +6,9 @@ import { arraysEqual } from './helpers/arraysEqual'
 
 import useMovement from 'hooks/useMovement'
 
-import styles from './styles/Map.module.css'
+import mapStyles from './styles/Map.module.css'
 import internal from 'stream'
+import { useSpring } from 'react-spring'
 
 type Position = [number, number]
 interface MapProps {
@@ -48,23 +49,27 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
     }, [direction])
 
 
-    const getMapCrop = (animateDirection: MovementDirection | null): MovementResult[][] => {
+    const getMapCropAndAnimation = (animateDirection: MovementDirection | null): {
+        fields: MovementResult[][],
+        springObject: Object
+    } => {
         let fromX = currentPos[0] - 1;
         let toX = currentPos[0] + 1
 
         let fromY = currentPos[1] - 1
         let toY = currentPos[1] + 1
 
+        let springObject = {}
 
         switch (animateDirection) {
             case 'n':
                 fromY--;
                 break;
             case 'e':
-                fromX++;
+                toX++;
                 break;
             case 's':
-                fromY++;
+                toY++;
                 break;
             case 'w':
                 fromX--;
@@ -72,15 +77,15 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         }
 
         let fields: MovementResult[][] = [];
-        for (let x = fromX; x <= toX; x++) {
+        for (let y = fromY; y <= toY; y++) {
             let row: MovementResult[] = []
-            for (let y = fromY; y <= toY; y++) {
+            for (let x = fromX; x <= toX; x++) {
                 row.push(fieldOnPos([x, y]))
             }
             fields.push(row);
         }
 
-        return fields;
+        return {fields, springObject};
     }
 
     const fieldOnPos = (pos: Position): MovementResult => {
@@ -94,20 +99,21 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         return field
     }
 
-    const Fields = ({animateDirection}: { animateDirection: MovementDirection|null}): JSX.Element => {
-        const fields = getMapCrop(animateDirection)
+    const Map = ({ animateDirection }: { animateDirection: MovementDirection | null }): JSX.Element => {
+        const {fields, springObject} = getMapCropAndAnimation(animateDirection)
+        const styles = useSpring(springObject)
 
         const eventMapper = {
-            'fallen': styles.fieldFog,
-            'slaughtered': styles.fieldFog,
-            'victory': styles.fieldFog,
-            'fog': styles.fieldFog,
-            'path': styles.fieldPath,
-            'invalid': styles.fieldFog
+            'fallen': mapStyles.fieldFog,
+            'slaughtered': mapStyles.fieldFog,
+            'victory': mapStyles.fieldFog,
+            'fog': mapStyles.fieldFog,
+            'path': mapStyles.fieldPath,
+            'invalid': mapStyles.fieldFog
         }
 
         return (
-            <table className={styles.map}>
+            <table className={mapStyles.map} >
                 <tbody>
                     {fields.map((row, i) =>
                         <tr key={i}>
@@ -120,9 +126,9 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
     }
 
     return (
-        <div className={styles.mapContainer}>
-            <Fields animateDirection={direction} />
-            <div className={styles.frodo} />
+        <div className={mapStyles.mapContainer}>
+            <Map animateDirection={direction} />
+            <div className={mapStyles.frodo} />
         </div>
     )
 }
