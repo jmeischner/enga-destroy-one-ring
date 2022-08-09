@@ -23,9 +23,11 @@ interface PosField {
 const POS_START: Position = [0, 0]
 
 const Map = ({ afterMove }: MapProps): JSX.Element => {
+    const [isWalking, setIsWalking] = useState(true)
+    const [showDeathScreen, setShowDeathScreen] = useState(false)
+    const [showVictoryScreen, setShowVictoryScreen] = useState(false)
     const [currentPos, setCurrentPos] = useState(POS_START)
     const [knownMap, setKnownMap] = useState<PosField[]>([{ pos: POS_START, field: 'Path' }])
-
     const { direction, isLocked, setIsLocked } = useMovement()
 
     const updateMapAndPosition = (direction: MovementDirection, field: MovementResult) => {
@@ -52,15 +54,26 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         }
 
         setIsLocked(true)
-        console.log('move()', 'locked')
-        console.log('move()', 'direction', direction)
 
         const response = await api.move(direction)
         const movementResult = response.movementResult
 
-        console.log({ movementResult })
         updateMapAndPosition(direction, movementResult)
-        setIsLocked(false)
+        switch (movementResult) {
+            case 'Path':
+                setIsLocked(false)
+                break;
+            case 'Slaughtered':
+            case 'Fallen':
+                setIsWalking(false)
+                setShowDeathScreen(true);
+                console.log('show death screen')
+                break;
+            case 'Victory':
+                setIsWalking(false)
+                setShowVictoryScreen(true);
+                break;
+        }
     }
 
     useEffect(() => {
@@ -106,9 +119,9 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         console.log({ fields })
 
         const eventMapper = {
-            'Fallen': mapStyles.fieldFog,
-            'Slaughtered': mapStyles.fieldFog,
-            'Victory': mapStyles.fieldFog,
+            'Fallen': mapStyles.fieldFallen,
+            'Slaughtered': mapStyles.fieldSlaughtered,
+            'Victory': mapStyles.fieldVictory,
             'Fog': mapStyles.fieldFog,
             'Path': mapStyles.fieldPath,
             'Invalid': mapStyles.fieldFog
@@ -127,10 +140,13 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         )
     }
 
+
     return (
         <div className={mapStyles.mapContainer}>
             <Map />
-            <div className={mapStyles.frodo} />
+            {isWalking && (<div className={mapStyles.frodo} />)}
+            {showDeathScreen && (<div className={mapStyles.splash}><h2>Du bist tot!</h2></div>)}
+            {showVictoryScreen && (<div className={mapStyles.splash}><h2>Ring zerstört</h2></div>)}
         </div>
     )
 }

@@ -22,6 +22,23 @@
 }
 .fieldPath {
   background: url(/Grass.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
+.fieldSlaughtered {
+  background: url(/Ork-Gold-Sword.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
+.fieldFallen {
+  background: url(/Fall1.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
+.fieldVictory {
+  background: url(/Mountain-Gold.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
 }
 .frodo{
   width: 226px;
@@ -32,3 +49,23 @@
   z-index: 20;
   background: url(/Frodo.svg) center no-repeat;
 }
+
+
+
+.splash {    background: rgba(0,0,0,0.5);
+  width: 620px;
+  height: 620px;
+  margin-left: -310px;
+  margin-top: -310px;
+  position: absolute;
+  top: 50%;
+  left: 50%;}
+
+  .splash h2 {
+    margin-top: 84px;
+    color: #CCBDAD;
+    font-family: "Cinzel Decorative", fantasy;
+
+    font-size: 54px;
+    text-align: center;
+  }

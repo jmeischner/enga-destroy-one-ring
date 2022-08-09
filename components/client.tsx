@@ -22,9 +22,9 @@ const Client = (): JSX.Element => {
 
   return (
     <div className={styles.container}>
-      <p>Client Game</p>
+      <h1 className={styles.headline}>Destroy one ring</h1>
 
-      <p>Session: {sessionId ?? ''}</p>
+      <p className={styles.sessionid}>Session: {sessionId ?? ''}</p>
 
       <Map
         afterMove={handleAfterMapMove}
