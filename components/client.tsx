@@ -25,7 +25,7 @@ const Client = (): JSX.Element => {
   return (
     <div className={styles.container}>
       <h1 className={styles.headline}>Destroy one ring</h1>
-      <p className={styles.sessionid}>Session: {sessionId ?? ''}</p>
+
       <Map movement={movement} sessionId={sessionId} />
       
       <Buttons movement={movement} />

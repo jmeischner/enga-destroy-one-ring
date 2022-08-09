@@ -1,20 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
-import { Movement, MovementDirection, MovementResult } from 'components/interfaces/movement'
+import { MovementDirection, MovementResult } from 'components/interfaces/movement'
 
 import { arraysEqual } from './helpers/arraysEqual'
 
-import useMovement from 'hooks/useMovement'
+import { UseMovementReturn } from 'hooks/useMovement'
 
 import { api } from 'hooks/api'
 
 import mapStyles from './styles/Map.module.css'
-import internal from 'stream'
 
 type Position = [number, number]
+
 interface MapProps {
-    afterMove: () => void
+    movement: UseMovementReturn
+    sessionId: string | null
 }
+
 interface PosField {
     pos: Position,
     field: MovementResult
@@ -22,15 +24,14 @@ interface PosField {
 
 const POS_START: Position = [0, 0]
 
-const Map = ({ afterMove }: MapProps): JSX.Element => {
+const Map = ({ movement, sessionId }: MapProps): JSX.Element => {
     const [isWalking, setIsWalking] = useState(true)
     const [showDeathScreen, setShowDeathScreen] = useState(false)
     const [showVictoryScreen, setShowVictoryScreen] = useState(false)
     const [currentPos, setCurrentPos] = useState(POS_START)
     const [knownMap, setKnownMap] = useState<PosField[]>([{ pos: POS_START, field: 'Path' }])
-    const { direction, isLocked, setIsLocked } = useMovement()
 
-    const updateMapAndPosition = (direction: MovementDirection, field: MovementResult) => {
+    const updateMapAndPosition = useCallback((direction: MovementDirection, field: MovementResult) => {
         const directionMapper = {
             'n': [0, -1],
             'e': [1, 0],
@@ -46,22 +47,22 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         setKnownMap(map)
 
         setCurrentPos(pos)
-    }
+    }, [])
 
-    const move = async (direction: MovementDirection) => {
-        if (isLocked) {
+    const move = useCallback(async (direction: MovementDirection) => {
+        if (movement.isLocked) {
             return
         }
 
-        setIsLocked(true)
+        movement.setIsLocked(true)
 
-        const response = await api.move(direction)
+        const response = await api.move(direction, sessionId)
         const movementResult = response.movementResult
 
         updateMapAndPosition(direction, movementResult)
         switch (movementResult) {
             case 'Path':
-                setIsLocked(false)
+                movement.setIsLocked(false)
                 break;
             case 'Slaughtered':
             case 'Fallen':
@@ -74,13 +75,13 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
                 setShowVictoryScreen(true);
                 break;
         }
-    }
+    }, [])
 
     useEffect(() => {
-        if (direction) {
-            move(direction)
+        if (movement.direction) {
+            move(movement.direction)
         }
-    }, [direction])
+    }, [movement.direction, move])
 
 
     const getMapCrop = (): MovementResult[][] => {
