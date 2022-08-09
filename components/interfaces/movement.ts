@@ -5,4 +5,4 @@ export interface Movement {
 
 export type MovementDirection = 'n' | 'e' | 's' | 'w'
 
-export type MovementResult = 'fallen' | 'slaughtered' | 'victory' | 'path' | 'fog' | 'invalid'
+export type MovementResult = 'Fallen' | 'Slaughtered' | 'Victory' | 'Path' | 'Fog' | 'Invalid'

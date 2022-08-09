@@ -6,9 +6,10 @@ import { arraysEqual } from './helpers/arraysEqual'
 
 import useMovement from 'hooks/useMovement'
 
+import { api } from 'hooks/api'
+
 import mapStyles from './styles/Map.module.css'
 import internal from 'stream'
-import { useSpring } from 'react-spring'
 
 type Position = [number, number]
 interface MapProps {
@@ -27,7 +28,7 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
 
     const { direction, isLocked, setIsLocked } = useMovement()
 
-    const move = (direction: MovementDirection) => {
+    const move = async (direction: MovementDirection) => {
         if (isLocked) {
             return
         }
@@ -36,10 +37,9 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         console.log('move()', 'locked')
         console.log('move()', 'direction', direction)
 
-        setTimeout(() => {
-            setIsLocked(false)
-            console.log('move()', 'unlocked')
-        }, 2000)
+        const response = await api.move(direction)
+
+        console.log({response})
     }
 
     useEffect(() => {
@@ -49,32 +49,13 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
     }, [direction])
 
 
-    const getMapCropAndAnimation = (animateDirection: MovementDirection | null): {
-        fields: MovementResult[][],
-        springObject: Object
-    } => {
+    const getMapCrop = (): MovementResult[][] => {
         let fromX = currentPos[0] - 1;
         let toX = currentPos[0] + 1
 
         let fromY = currentPos[1] - 1
         let toY = currentPos[1] + 1
 
-        let springObject = {}
-
-        switch (animateDirection) {
-            case 'n':
-                fromY--;
-                break;
-            case 'e':
-                toX++;
-                break;
-            case 's':
-                toY++;
-                break;
-            case 'w':
-                fromX--;
-                break;
-        }
 
         let fields: MovementResult[][] = [];
         for (let y = fromY; y <= toY; y++) {
@@ -85,11 +66,11 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
             fields.push(row);
         }
 
-        return {fields, springObject};
+        return fields;
     }
 
     const fieldOnPos = (pos: Position): MovementResult => {
-        let field: MovementResult = 'fog'
+        let field: MovementResult = 'Fog'
 
         knownMap.forEach((val) => {
             if (arraysEqual(val.pos, pos))
@@ -99,17 +80,16 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         return field
     }
 
-    const Map = ({ animateDirection }: { animateDirection: MovementDirection | null }): JSX.Element => {
-        const {fields, springObject} = getMapCropAndAnimation(animateDirection)
-        const styles = useSpring(springObject)
+    const Map = (): JSX.Element => {
+        const fields = getMapCrop()
 
         const eventMapper = {
-            'fallen': mapStyles.fieldFog,
-            'slaughtered': mapStyles.fieldFog,
-            'victory': mapStyles.fieldFog,
-            'fog': mapStyles.fieldFog,
-            'path': mapStyles.fieldPath,
-            'invalid': mapStyles.fieldFog
+            'Fallen': mapStyles.fieldFog,
+            'Slaughtered': mapStyles.fieldFog,
+            'Victory': mapStyles.fieldFog,
+            'Fog': mapStyles.fieldFog,
+            'Path': mapStyles.fieldPath,
+            'Invalid': mapStyles.fieldFog
         }
 
         return (
@@ -127,7 +107,7 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
 
     return (
         <div className={mapStyles.mapContainer}>
-            <Map animateDirection={direction} />
+            <Map />
             <div className={mapStyles.frodo} />
         </div>
     )
