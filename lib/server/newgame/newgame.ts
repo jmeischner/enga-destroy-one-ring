@@ -1,12 +1,14 @@
 import { v4 as uuidv4 } from "uuid";
 import { setCookie } from "cookies-next";
 import { NextApiRequest, NextApiResponse } from "next";
+import {MovementResult} from "./movement";
 
 export const COOKIE: string = "GAMESTATE";
 
 export interface GameState {
   readonly position: Position;
   readonly sessionId: string;
+  readonly state: MovementResult;
 }
 
 export const createUniqueSessionId = (): string => {
