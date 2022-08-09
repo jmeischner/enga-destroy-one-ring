@@ -1,4 +1,4 @@
-import { MovementDirection } from 'components/interfaces/movement'
+import { MovementDirection, MovementResult } from 'components/interfaces/movement'
 
 const basePath = 'http://localhost:3000/api/'
 
@@ -6,7 +6,9 @@ interface ApiResponseNewGame {
   id: string
 }
 
-interface ApiResponseMove {}
+interface ApiResponseMove {
+  movementResult: MovementResult
+}
 
 type ApiExecuteFunction<T> = (...args: any[]) => Promise<T>
 

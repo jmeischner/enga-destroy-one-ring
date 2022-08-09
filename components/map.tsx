@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { MovementDirection, MovementResult } from 'components/interfaces/movement'
+import { Movement, MovementDirection, MovementResult } from 'components/interfaces/movement'
 
 import { arraysEqual } from './helpers/arraysEqual'
 
@@ -24,9 +24,27 @@ const POS_START: Position = [0, 0]
 
 const Map = ({ afterMove }: MapProps): JSX.Element => {
     const [currentPos, setCurrentPos] = useState(POS_START)
-    const [knownMap, setKnownMap] = useState<PosField[]>([{ pos: POS_START, field: 'path' }])
+    const [knownMap, setKnownMap] = useState<PosField[]>([{ pos: POS_START, field: 'Path' }])
 
     const { direction, isLocked, setIsLocked } = useMovement()
+
+    const updateMapAndPosition = (direction: MovementDirection, field: MovementResult) => {
+        const directionMapper = {
+            'n': [0, -1],
+            'e': [1, 0],
+            's': [0, 1],
+            'w': [-1, 0],
+        };
+
+        const transition = directionMapper[direction];
+
+        const pos: Position = [currentPos[0] + transition[0], currentPos[1] + transition[1]]
+        let map = knownMap
+        map.push({ pos, field })
+        setKnownMap(map)
+
+        setCurrentPos(pos)
+    }
 
     const move = async (direction: MovementDirection) => {
         if (isLocked) {
@@ -38,8 +56,11 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         console.log('move()', 'direction', direction)
 
         const response = await api.move(direction)
+        const movementResult = response.movementResult
 
-        console.log({response})
+        console.log({ movementResult })
+        updateMapAndPosition(direction, movementResult)
+        setIsLocked(false)
     }
 
     useEffect(() => {
@@ -82,6 +103,7 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
 
     const Map = (): JSX.Element => {
         const fields = getMapCrop()
+        console.log({ fields })
 
         const eventMapper = {
             'Fallen': mapStyles.fieldFog,
