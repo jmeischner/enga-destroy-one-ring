@@ -1,19 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
-import { Movement, MovementDirection, MovementResult } from 'components/interfaces/movement'
+import { MovementDirection, MovementResult } from 'components/interfaces/movement'
 
 import { arraysEqual } from './helpers/arraysEqual'
 
-import useMovement from 'hooks/useMovement'
+import { UseMovementReturn } from 'hooks/useMovement'
 
 import { api } from 'hooks/api'
 
 import mapStyles from './styles/Map.module.css'
-import internal from 'stream'
 
 type Position = [number, number]
 interface MapProps {
-    afterMove: () => void
+    movement: UseMovementReturn
 }
 interface PosField {
     pos: Position,
@@ -22,13 +21,11 @@ interface PosField {
 
 const POS_START: Position = [0, 0]
 
-const Map = ({ afterMove }: MapProps): JSX.Element => {
+const Map = ({ movement }: MapProps): JSX.Element => {
     const [currentPos, setCurrentPos] = useState(POS_START)
     const [knownMap, setKnownMap] = useState<PosField[]>([{ pos: POS_START, field: 'Path' }])
 
-    const { direction, isLocked, setIsLocked } = useMovement()
-
-    const updateMapAndPosition = (direction: MovementDirection, field: MovementResult) => {
+    const updateMapAndPosition = useCallback((direction: MovementDirection, field: MovementResult) => {
         const directionMapper = {
             'n': [0, -1],
             'e': [1, 0],
@@ -44,14 +41,14 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
         setKnownMap(map)
 
         setCurrentPos(pos)
-    }
+    }, [])
 
-    const move = async (direction: MovementDirection) => {
-        if (isLocked) {
+    const move = useCallback(async (direction: MovementDirection) => {
+        if (movement.isLocked) {
             return
         }
 
-        setIsLocked(true)
+        movement.setIsLocked(true)
         console.log('move()', 'locked')
         console.log('move()', 'direction', direction)
 
@@ -60,15 +57,14 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
 
         console.log({ movementResult })
         updateMapAndPosition(direction, movementResult)
-        setIsLocked(false)
-    }
+        movement.setIsLocked(false)
+    }, [])
 
     useEffect(() => {
-        if (direction) {
-            move(direction)
+        if (movement.direction) {
+            move(movement.direction)
         }
-    }, [direction])
-
+    }, [movement.direction, move])
 
     const getMapCrop = (): MovementResult[][] => {
         let fromX = currentPos[0] - 1;
@@ -76,7 +72,6 @@ const Map = ({ afterMove }: MapProps): JSX.Element => {
 
         let fromY = currentPos[1] - 1
         let toY = currentPos[1] + 1
-
 
         let fields: MovementResult[][] = [];
         for (let y = fromY; y <= toY; y++) {
