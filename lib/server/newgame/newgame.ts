@@ -1,7 +1,7 @@
-import { v4 as uuidv4 } from "uuid";
+import random from "random";
 import { setCookie } from "cookies-next";
 import { NextApiRequest, NextApiResponse } from "next";
-import {MovementResult} from "./movement";
+import { MovementResult } from "../movement/movement";
 
 export const COOKIE: string = "GAMESTATE";
 
@@ -12,7 +12,7 @@ export interface GameState {
 }
 
 export const createUniqueSessionId = (): string => {
-  return uuidv4();
+  return random.int(0, 99999999).toString();
 };
 
 export const getStartPosition = (): Position => {

@@ -7,16 +7,16 @@ import {
   saveGameState,
 } from "./newgame";
 
-import * as uuid from "uuid";
+import random from "random";
 import * as cookies from "cookies-next";
-import {NextApiRequest, NextApiResponse} from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 
 // const mockV4 = jest.fn();
 // const mockSetCookies = jest.fn();
 
-jest.mock("uuid", () => {
+jest.mock("random", () => {
   return {
-    v4: jest.fn(),
+    int: jest.fn().mockReturnValue(42),
   };
 });
 
@@ -34,7 +34,7 @@ describe("newGame's", () => {
   describe("createUniqueSessionId", () => {
     test("should return a random value", () => {
       createUniqueSessionId();
-      expect(uuid.v4).toHaveBeenCalled();
+      expect(random.int).toHaveBeenCalled();
     });
   });
 
@@ -50,7 +50,11 @@ describe("newGame's", () => {
   describe("saveGameState", () => {
     test("should set the startPosition as cookie", () => {
       const startPosition = getStartPosition();
-      const testGameState: GameState = {position: startPosition, sessionId: '42', state: 'path'}
+      const testGameState: GameState = {
+        position: startPosition,
+        sessionId: "42",
+        state: "path",
+      };
       saveGameState(testGameState, {} as NextApiRequest, {} as NextApiResponse);
       expect(cookies.setCookie).toHaveBeenCalledWith(
         COOKIE,

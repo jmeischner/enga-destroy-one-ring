@@ -12,10 +12,10 @@
   "dependencies": {
     "cookies-next": "^2.1.1",
     "next": "12.2.4",
+    "random": "^3.0.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-spring": "^9.5.2",
-    "uuid": "^8.3.2"
+    "react-spring": "^9.5.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
