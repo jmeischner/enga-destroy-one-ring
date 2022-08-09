@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import useApi from 'hooks/useApi'
+import { api } from 'hooks/api'
 
 import styles from './styles/Client.module.css'
 
@@ -10,11 +11,9 @@ import Map from './map'
 import Buttons from './buttons'
 
 const Client = (): JSX.Element => {
-  const [sessionId, setSessionId] = useState<string>()
+  const [sessionId, setSessionId] = useState<string |null>(null)
 
   const movement = useMovement()
-
-  const api = useApi()
 
   const newGame = () => {
     api.newGame()
@@ -27,7 +26,7 @@ const Client = (): JSX.Element => {
     <div className={styles.container}>
       <p>Client Game</p>
 
-      <Map movement={movement} />
+      <Map movement={movement} sessionId={sessionId} />
 
       <Buttons movement={movement} />
     </div>

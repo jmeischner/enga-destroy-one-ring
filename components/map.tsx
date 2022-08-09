@@ -13,6 +13,7 @@ import mapStyles from './styles/Map.module.css'
 type Position = [number, number]
 interface MapProps {
     movement: UseMovementReturn
+    sessionId: string | null
 }
 interface PosField {
     pos: Position,
@@ -21,7 +22,7 @@ interface PosField {
 
 const POS_START: Position = [0, 0]
 
-const Map = ({ movement }: MapProps): JSX.Element => {
+const Map = ({ movement, sessionId }: MapProps): JSX.Element => {
     const [currentPos, setCurrentPos] = useState(POS_START)
     const [knownMap, setKnownMap] = useState<PosField[]>([{ pos: POS_START, field: 'Path' }])
 
@@ -52,12 +53,13 @@ const Map = ({ movement }: MapProps): JSX.Element => {
         console.log('move()', 'locked')
         console.log('move()', 'direction', direction)
 
-        const response = await api.move(direction)
+        const response = await api.move(direction, sessionId)
         const movementResult = response.movementResult
 
         console.log({ movementResult })
         updateMapAndPosition(direction, movementResult)
         movement.setIsLocked(false)
+        movement.setDirection(null)
     }, [])
 
     useEffect(() => {
