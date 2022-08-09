@@ -1,0 +1,71 @@
+.mapContainer {
+  border: 5px solid black;
+  width: 678px;
+  height: 678px;
+  overflow: hidden;
+  border-radius: 26px;
+  position: relative;
+}
+.map {
+   border-collapse: collapse;
+   transition: 2s;
+   position: absolute;
+}
+.map td {
+  width: 226px;
+  height: 226px;
+  border: 1px solid black;
+}
+.fieldFog {
+  background: url(/Fog.svg) rgba(0,0,0,0.3) center no-repeat;
+  background-size: cover;
+}
+.fieldPath {
+  background: url(/Grass.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
+.fieldSlaughtered {
+  background: url(/Ork-Gold-Sword.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
+.fieldFallen {
+  background: url(/Fall1.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
+.fieldVictory {
+  background: url(/Mountain-Gold.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
+.frodo{
+  width: 226px;
+  height: 226px;
+  position: absolute;
+  top: 226px;
+  left: 226px;
+  z-index: 20;
+  background: url(/Frodo.svg) center no-repeat;
+}
+
+
+
+.splash {    background: rgba(0,0,0,0.5);
+  width: 620px;
+  height: 620px;
+  margin-left: -310px;
+  margin-top: -310px;
+  position: absolute;
+  top: 50%;
+  left: 50%;}
+
+  .splash h2 {
+    margin-top: 84px;
+    color: #CCBDAD;
+    font-family: "Cinzel Decorative", fantasy;
+
+    font-size: 54px;
+    text-align: center;
+  }
