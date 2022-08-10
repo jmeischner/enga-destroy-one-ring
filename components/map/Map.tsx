@@ -17,7 +17,7 @@ import styles from "./Map.module.css";
 import type { World } from "./mapUtils";
 import { Position } from "lib/server/newgame/newgame";
 import { useKeyPress } from "./useKeyPress";
-import { api } from "./api";
+import { api } from "../api";
 import { GameEnd } from "./GameEnd";
 import { Victory } from "./Victory";
 
