@@ -7,7 +7,9 @@ import {
   getInitialMap,
   getInitialPosition,
   getMapCrop,
+  getMovementState,
   moveInDirection,
+  MovementState,
 } from "./mapUtils";
 
 import styles from "./Map.module.css";
@@ -16,6 +18,8 @@ import type { World } from "./mapUtils";
 import { Position } from "lib/server/newgame/newgame";
 import { useKeyPress } from "./useKeyPress";
 import { api } from "./api";
+import { GameEnd } from "./GameEnd";
+import { Victory } from "./Victory";
 
 interface MapProps {
   readonly sessionId: string | null;
@@ -33,14 +37,11 @@ function getInitialGameState() {
   };
 }
 
-enum MovementState {
-  Walking,
-  Dead,
-  Victory,
-}
-
 export const Map = ({ sessionId }: MapProps) => {
   const [gameState, setGameState] = useState<GameState>(getInitialGameState());
+  const [movementState, setMovementState] = useState<MovementState>(
+    MovementState.Walking
+  );
   const [map, setMap] = useState<World | null>(null);
   const goInDirection = async (direction: Direction) => {
     const result = await api.move(sessionId, direction);
@@ -54,12 +55,11 @@ export const Map = ({ sessionId }: MapProps) => {
       position: newPosition,
       map: newMap,
     });
+    setMovementState(getMovementState(result.movementResult));
   };
 
   useEffect(() => {
-    const mapCrop = getMapCrop(gameState.position, gameState.map);
-    console.log(mapCrop);
-    setMap(mapCrop);
+    setMap(getMapCrop(gameState.position, gameState.map));
   }, [gameState]);
 
   const ref = useKeyPress<HTMLDivElement>({
@@ -83,6 +83,17 @@ export const Map = ({ sessionId }: MapProps) => {
     ],
   });
 
+  const displayGameState = (state: MovementState) => {
+    switch (state) {
+      case MovementState.Walking:
+        return <Frodo />;
+      case MovementState.Dead:
+        return <GameEnd />;
+      case MovementState.Victory:
+        return <Victory />;
+    }
+  };
+
   return (
     <div ref={ref} className={styles.mapContainer}>
       <div className={styles["visible-map"]}>
@@ -95,7 +106,7 @@ export const Map = ({ sessionId }: MapProps) => {
             </div>
           ))}
       </div>
-      <Frodo />
+      {displayGameState(movementState)}
     </div>
   );
 };

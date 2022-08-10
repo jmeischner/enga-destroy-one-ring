@@ -7,6 +7,12 @@ export interface MapField {
   type: MovementResult;
 }
 
+export enum MovementState {
+  Walking,
+  Dead,
+  Victory,
+}
+
 function newField(type: MovementResult = "fog"): MapField {
   return {
     type,
@@ -84,6 +90,12 @@ function compensateMapAddition(
     default:
       return currentPosition;
   }
+}
+
+export function getMovementState(type: MovementResult): MovementState {
+  if (type === "fallen" || type === "slaughtered") return MovementState.Dead;
+  if (type === "victory") return MovementState.Victory;
+  return MovementState.Walking;
 }
 
 export function getInitialPosition() {
