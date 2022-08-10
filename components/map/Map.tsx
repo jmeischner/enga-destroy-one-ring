@@ -62,7 +62,7 @@ export const Map = ({ sessionId }: MapProps) => {
     setMap(getMapCrop(gameState.position, gameState.map));
   }, [gameState]);
 
-  const ref = useKeyPress<HTMLDivElement>({
+  useKeyPress({
     keys: [
       {
         targetKey: "a",
@@ -95,7 +95,7 @@ export const Map = ({ sessionId }: MapProps) => {
   };
 
   return (
-    <div ref={ref} className={styles.mapContainer}>
+    <div className={styles.mapContainer}>
       <div className={styles["visible-map"]}>
         {map &&
           map.map((row, i) => (
