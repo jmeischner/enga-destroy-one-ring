@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Tile } from "./Tile";
 import { Frodo } from "./Frodo";
@@ -20,6 +20,9 @@ import { useKeyPress } from "./useKeyPress";
 import { api } from "../api";
 import { GameEnd } from "./GameEnd";
 import { Victory } from "./Victory";
+import { animated, SpringRef, useSpring } from "react-spring";
+
+const TILE_SHIFT = 226;
 
 interface MapProps {
   readonly sessionId: string | null;
@@ -37,31 +40,138 @@ function getInitialGameState() {
   };
 }
 
+function animateTo(
+  margin: "marginTop" | "marginBottom" | "marginLeft" | "marginRight"
+) {
+  const getToObject = (value: string) => {
+    let to: any = {};
+    to[margin] = value;
+    return to;
+  };
+  const animationToValue =
+    margin === "marginTop" || margin === "marginLeft"
+      ? "0"
+      : `-${2 * TILE_SHIFT}px`;
+  return {
+    to: async (next: any) => {
+      await next({
+        to: getToObject(animationToValue),
+        config: { duration: undefined },
+      });
+      await next({
+        to: getToObject(`-${TILE_SHIFT}px`),
+        config: { duration: 0 },
+      });
+    },
+  };
+}
+
+function animateDirectionChange(
+  direction: Direction,
+  animation: SpringRef<any>
+) {
+  return new Promise((resolve) => {
+    switch (direction) {
+      case Direction.east:
+        animation.start({
+          to: async (next: any) => {
+            await next({
+              to: { marginLeft: `-${2 * TILE_SHIFT}px` },
+              config: { duration: undefined },
+            });
+            await next({
+              to: { marginLeft: `-${TILE_SHIFT}px` },
+              config: { duration: 0 },
+            });
+            resolve(true);
+          },
+        });
+        break;
+      case Direction.west:
+        animation.start({
+          to: async (next: any) => {
+            await next({
+              to: { marginLeft: `0` },
+              config: { duration: undefined },
+            });
+            await next({
+              to: { marginLeft: `-${TILE_SHIFT}px` },
+              config: { duration: 0 },
+            });
+            resolve(true);
+          },
+        });
+        break;
+      case Direction.north:
+        animation.start({
+          to: async (next: any) => {
+            await next({
+              to: { marginTop: `0` },
+              config: { duration: undefined },
+            });
+            await next({
+              to: { marginTop: `-${TILE_SHIFT}px` },
+              config: { duration: 0 },
+            });
+            resolve(true);
+          },
+        });
+        break;
+      case Direction.south:
+        animation.start({
+          to: async (next: any) => {
+            await next({
+              to: { marginTop: `-${2 * TILE_SHIFT}px` },
+              config: { duration: undefined },
+            });
+            await next({
+              to: { marginTop: `-${TILE_SHIFT}px` },
+              config: { duration: 0 },
+            });
+            resolve(true);
+          },
+        });
+        break;
+    }
+  });
+}
+
 export const Map = ({ sessionId }: MapProps) => {
   const [gameState, setGameState] = useState<GameState>(getInitialGameState());
   const [movementState, setMovementState] = useState<MovementState>(
     MovementState.Walking
   );
-  const [map, setMap] = useState<World | null>(null);
-  const goInDirection = async (direction: Direction) => {
-    const result = await api.move(sessionId, direction);
-    const [newPosition, newMap] = moveInDirection(
-      direction,
-      gameState.position,
-      result.movementResult,
-      gameState.map
-    );
-    setGameState({
-      position: newPosition,
-      map: newMap,
-    });
-    setMovementState(getMovementState(result.movementResult));
-  };
+  const [lock, setLock] = useState(false);
+  const [map, setMap] = useState<World | null>(
+    getMapCrop(gameState.position, gameState.map)
+  );
+  const [animationStyles, animation] = useSpring(() => ({
+    marginTop: `-${TILE_SHIFT}px`,
+    marginLeft: `-${TILE_SHIFT}px`,
+    marginBottom: `-${TILE_SHIFT}px`,
+    marginRight: `-${TILE_SHIFT}px`,
+  }));
 
-  useEffect(() => {
-    setMap(getMapCrop(gameState.position, gameState.map));
-  }, [gameState]);
-
+  async function goInDirection(direction: Direction) {
+    if (!lock) {
+      setLock(true);
+      const result = await api.move(sessionId, direction);
+      await animateDirectionChange(direction, animation);
+      const [newPosition, newMap] = moveInDirection(
+        direction,
+        gameState.position,
+        result.movementResult,
+        gameState.map
+      );
+      setGameState({
+        position: newPosition,
+        map: newMap,
+      });
+      setMovementState(getMovementState(result.movementResult));
+      setMap(getMapCrop(newPosition, newMap));
+      setLock(false);
+    }
+  }
   useKeyPress({
     keys: [
       {
@@ -96,7 +206,7 @@ export const Map = ({ sessionId }: MapProps) => {
 
   return (
     <div className={styles.mapContainer}>
-      <div className={styles["visible-map"]}>
+      <animated.div className={styles["visible-map"]} style={animationStyles}>
         {map &&
           map.map((row, i) => (
             <div className={styles.row} key={i}>
@@ -105,7 +215,7 @@ export const Map = ({ sessionId }: MapProps) => {
               ))}
             </div>
           ))}
-      </div>
+      </animated.div>
       {displayGameState(movementState)}
     </div>
   );

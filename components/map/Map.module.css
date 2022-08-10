@@ -10,10 +10,6 @@
   border-collapse: collapse;
 }
 
-.visible-map {
-  margin: -226px;
-}
-
 .row {
   display: flex;
   flex-direction: row;

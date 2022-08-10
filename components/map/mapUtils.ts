@@ -30,7 +30,13 @@ export enum Direction {
 
 function addRowTo(side: "start" | "end", map: World): World {
   const rowLength = map[0].length;
-  const emptyRow: MapField[] = new Array(rowLength).fill(newField());
+  const emptyRow = [];
+  // new Array(rowLength).fill(newField()) is creating an array
+  // where every item is the same reference. This means, changing
+  // one type value in the row, is changing every type
+  for (let i = 0; i < rowLength; i++) {
+    emptyRow.push(newField());
+  }
   if (side === "end") return [...map, emptyRow];
   else return [emptyRow, ...map];
 }
@@ -57,8 +63,6 @@ function addToMap(direction: Direction, map: World): World {
       return addColumnTo("left", map);
     case Direction.east:
       return addColumnTo("right", map);
-    default:
-      return map;
   }
 }
 
@@ -102,13 +106,25 @@ export function getInitialPosition() {
   return new Position(2, 2);
 }
 
+function cloneArray<T>(arr: T[][]): T[][] {
+  let newArray: T[][] = [];
+  for (let y of arr) {
+    let row: T[] = [];
+    for (let x of y) {
+      row.push(x);
+    }
+    newArray.push(row);
+  }
+  return newArray;
+}
+
 export function moveInDirection(
   direction: Direction,
   currentPosition: Position,
   fieldType: MovementResult,
   map: World
 ): MoveResult {
-  let newMap = map;
+  let newMap = cloneArray(map);
   let newPosition = movePosition(direction, currentPosition);
   if (
     newPosition.x < 2 ||
@@ -120,6 +136,7 @@ export function moveInDirection(
     newPosition = compensateMapAddition(direction, newPosition);
   }
   newMap[newPosition.y][newPosition.x].type = fieldType;
+
   return [newPosition, newMap];
 }
 

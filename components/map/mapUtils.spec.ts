@@ -83,6 +83,28 @@ describe("moveInDirection", () => {
     });
     expect(newPosition).toEqual({ x: 2, y: 2 });
   });
+  test("should be able to handle 3 times north", () => {
+    const map = getInitialMap();
+    let [newPosition, newMap] = moveInDirection(
+      Direction.north,
+      { x: 2, y: 2 },
+      "path",
+      map
+    );
+    [newPosition, newMap] = moveInDirection(
+      Direction.north,
+      newPosition,
+      "path",
+      newMap
+    );
+    [newPosition, newMap] = moveInDirection(
+      Direction.north,
+      newPosition,
+      "path",
+      newMap
+    );
+    expect(newMap[2].every((r) => r.type === "path")).toBeFalsy();
+  });
 });
 
 describe("getMapCrop", () => {
