@@ -1,0 +1,50 @@
+.mapContainer {
+  border: 5px solid black;
+  width: 682px;
+  height: 682px;
+  overflow: hidden;
+  border-radius: 26px;
+  position: relative;
+}
+.map {
+  border-collapse: collapse;
+}
+
+.visible-map {
+  margin: -226px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.frodo {
+  width: 226px;
+  height: 226px;
+  position: absolute;
+  top: 226px;
+  left: 226px;
+  z-index: 20;
+  background: url(/Frodo.svg) center no-repeat;
+}
+
+.splash {
+  background: rgba(0, 0, 0, 0.5);
+  width: 620px;
+  height: 620px;
+  margin-left: -310px;
+  margin-top: -310px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.splash h2 {
+  margin-top: 84px;
+  color: #ccbdad;
+  font-family: "Cinzel Decorative", fantasy;
+
+  font-size: 54px;
+  text-align: center;
+}

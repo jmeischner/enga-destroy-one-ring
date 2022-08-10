@@ -1,0 +1,30 @@
+.tile {
+  width: 226px;
+  height: 226px;
+  border: 1px solid black;
+  flex: 0 0 226px;
+}
+.fieldFog {
+  background: url(/Fog.svg) rgba(0, 0, 0, 0.3) center no-repeat;
+  background-size: cover;
+}
+.fieldPath {
+  background: url(/Grass.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
+.fieldSlaughtered {
+  background: url(/Ork-Gold-Sword.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
+.fieldFallen {
+  background: url(/Fall1.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
+.fieldVictory {
+  background: url(/Mountain-Gold.svg) center no-repeat;
+  position: relative;
+  z-index: 400;
+}
