@@ -21,8 +21,9 @@ import { api } from "../api";
 import { GameEnd } from "./GameEnd";
 import { Victory } from "./Victory";
 import { animated, SpringRef, useSpring } from "react-spring";
+import { animateDirectionChange } from "./animation";
 
-const TILE_SHIFT = 226;
+export const TILE_SHIFT = 226;
 
 interface MapProps {
   readonly sessionId: string | null;
@@ -38,102 +39,6 @@ function getInitialGameState() {
     position: getInitialPosition(),
     map: getInitialMap(),
   };
-}
-
-function animateTo(
-  margin: "marginTop" | "marginBottom" | "marginLeft" | "marginRight"
-) {
-  const getToObject = (value: string) => {
-    let to: any = {};
-    to[margin] = value;
-    return to;
-  };
-  const animationToValue =
-    margin === "marginTop" || margin === "marginLeft"
-      ? "0"
-      : `-${2 * TILE_SHIFT}px`;
-  return {
-    to: async (next: any) => {
-      await next({
-        to: getToObject(animationToValue),
-        config: { duration: undefined },
-      });
-      await next({
-        to: getToObject(`-${TILE_SHIFT}px`),
-        config: { duration: 0 },
-      });
-    },
-  };
-}
-
-function animateDirectionChange(
-  direction: Direction,
-  animation: SpringRef<any>
-) {
-  return new Promise((resolve) => {
-    switch (direction) {
-      case Direction.east:
-        animation.start({
-          to: async (next: any) => {
-            await next({
-              to: { marginLeft: `-${2 * TILE_SHIFT}px` },
-              config: { duration: undefined },
-            });
-            await next({
-              to: { marginLeft: `-${TILE_SHIFT}px` },
-              config: { duration: 0 },
-            });
-            resolve(true);
-          },
-        });
-        break;
-      case Direction.west:
-        animation.start({
-          to: async (next: any) => {
-            await next({
-              to: { marginLeft: `0` },
-              config: { duration: undefined },
-            });
-            await next({
-              to: { marginLeft: `-${TILE_SHIFT}px` },
-              config: { duration: 0 },
-            });
-            resolve(true);
-          },
-        });
-        break;
-      case Direction.north:
-        animation.start({
-          to: async (next: any) => {
-            await next({
-              to: { marginTop: `0` },
-              config: { duration: undefined },
-            });
-            await next({
-              to: { marginTop: `-${TILE_SHIFT}px` },
-              config: { duration: 0 },
-            });
-            resolve(true);
-          },
-        });
-        break;
-      case Direction.south:
-        animation.start({
-          to: async (next: any) => {
-            await next({
-              to: { marginTop: `-${2 * TILE_SHIFT}px` },
-              config: { duration: undefined },
-            });
-            await next({
-              to: { marginTop: `-${TILE_SHIFT}px` },
-              config: { duration: 0 },
-            });
-            resolve(true);
-          },
-        });
-        break;
-    }
-  });
 }
 
 export const Map = ({ sessionId }: MapProps) => {

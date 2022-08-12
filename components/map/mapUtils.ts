@@ -118,6 +118,21 @@ function cloneArray<T>(arr: T[][]): T[][] {
   return newArray;
 }
 
+function needToAddToMap(
+  position: Position,
+  map: World,
+  isNecessary: () => void
+) {
+  if (
+    position.x < 2 ||
+    position.x >= map[0].length - 2 ||
+    position.y < 2 ||
+    position.y >= map.length - 2
+  ) {
+    isNecessary();
+  }
+}
+
 export function moveInDirection(
   direction: Direction,
   currentPosition: Position,
@@ -126,15 +141,10 @@ export function moveInDirection(
 ): MoveResult {
   let newMap = cloneArray(map);
   let newPosition = movePosition(direction, currentPosition);
-  if (
-    newPosition.x < 2 ||
-    newPosition.x >= map[0].length - 2 ||
-    newPosition.y < 2 ||
-    newPosition.y >= map.length - 2
-  ) {
+  needToAddToMap(newPosition, newMap, () => {
     newMap = addToMap(direction, newMap);
     newPosition = compensateMapAddition(direction, newPosition);
-  }
+  });
   newMap[newPosition.y][newPosition.x].type = fieldType;
 
   return [newPosition, newMap];
